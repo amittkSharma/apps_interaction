@@ -1,0 +1,7 @@
+dist/**/*
+build
+public
+node_modules
+npm_licenses
+package.json
+package-lock.json

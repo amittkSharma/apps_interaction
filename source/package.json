@@ -1,0 +1,47 @@
+{
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "lerna": "6.5.1",
+    "prettier": "2.8.4",
+    "pretty-quick": "3.1.3",
+    "typescript": "4.6.4",
+    "@typescript-eslint/eslint-plugin": "5.28.0",
+    "@typescript-eslint/parser": "5.28.0",
+    "eslint": "8.18.0",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-prettier": "4.0.0",
+    "npm-license-tracker": "3.0.0",
+    "eslint-plugin-react": "7.30.0",
+    "eslint-plugin-import": "2.26.0",
+    "eslint-import-resolver-typescript": "2.7.1",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "husky": "4.3.6",
+    "lint-staged": "13.0.3"
+  },
+  "scripts": {
+    "postinstall": "lerna bootstrap --force-local",
+    "build": "lerna run build --parallel --no-bail &&  npm run lint -- --stream",
+    "clean": "lerna clean --yes",
+    "watch": "lerna run watch",
+    "lint": "lerna run lint",
+    "prettier": "lerna run prettier",
+    "bootstrap": "lerna bootstrap --hoist",
+    "start": "lerna run start",
+    "generate-license-info": "lerna run generate-license-info"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "npm run prettier",
+      "npm run lint"
+    ]
+  }
+}

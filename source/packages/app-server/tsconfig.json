@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "es2019", // according to https://github.com/tsconfig/bases/blob/master/bases/node12.json
+    "module": "commonjs",
+    "outDir": "build/dist",
+    "rootDir": "src",
+    "moduleResolution": "node",
+    "lib": ["esnext"], // this is very dangerous consider fixing it to a specific lib version
+    "downlevelIteration": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "noEmitHelpers": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": false, // true
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true, // TRUE
+    "pretty": true,
+    "removeComments": false,
+    "skipLibCheck": true, // PROJECT_SPECIFIC
+    "sourceMap": true,
+    "strict": true,
+    "suppressExcessPropertyErrors": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "composite": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
