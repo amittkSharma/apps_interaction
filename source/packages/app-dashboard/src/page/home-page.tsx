@@ -2,7 +2,7 @@ import { DashboardOutlined, InteractionOutlined } from '@ant-design/icons'
 import { Button, Layout, Space } from 'antd'
 import React, { useState } from 'react'
 import { notifyUser } from '../components'
-import { Application } from '../models'
+import { Application, MessageReceived, NewAppMessageReceived } from '../models'
 import { ApplicationsViewer } from '../viewers'
 
 const { Header, Footer, Content } = Layout
@@ -31,24 +31,10 @@ const footerStyle: React.CSSProperties = {
   backgroundColor: '#7dbcea',
 }
 
-const application1: Application = {
-  appId: '111',
-  input: 'input1',
-  output: 'output1',
-}
-
-const application2: Application = {
-  appId: '222',
-  input: 'input2',
-  output: 'output2',
-}
-
-const applications: Application[] = [application1, application2]
-
 export const HomePage: React.FC = () => {
   const [socket, setSocket] = useState<WebSocket>()
   const wsUrl = 'ws://localhost:8081'
-  const [message, setMessage] = useState<string>()
+  const [applications, setApplications] = useState<Application[]>([])
   const applicationId = 'dashboard'
 
   const connect = () => {
@@ -86,7 +72,22 @@ export const HomePage: React.FC = () => {
 
     ws.onmessage = (messageReceived: MessageEvent) => {
       if (ws && ws.readyState === WebSocket.OPEN) {
-        setMessage(JSON.stringify(messageReceived.data))
+        const parsedMsg = JSON.parse(messageReceived.data)
+        const msgReceived: MessageReceived = parsedMsg
+
+        if (msgReceived.messageType === 'newApps') {
+          const newAppsReceivedMsg: NewAppMessageReceived = parsedMsg
+          const existingApps = applications.map(x => x)
+          newAppsReceivedMsg.connectedAppIds.forEach(appId => {
+            const index = existingApps.findIndex(app => app.appId === appId)
+            if (index === -1) {
+              existingApps.push({ appId, input: '', output: '' })
+            }
+          })
+          setApplications(existingApps)
+        } else if (msgReceived.messageType === 'message') {
+          console.log(`New message is received`)
+        }
       } else {
         notifyUser(`Unable to receive the data on server: ${wsUrl}`, 'Error')
       }
@@ -121,8 +122,7 @@ export const HomePage: React.FC = () => {
           <Button type="primary" shape="circle" icon={<InteractionOutlined />} onClick={connect} />
         </Header>
         <Content style={contentStyle}>
-          <div style={{ marginLeft: 8 }}>
-            <p>{message}</p>
+          <div style={{ margin: 8 }}>
             <ApplicationsViewer applications={applications} onSendData={onHandleSendData} />
           </div>
         </Content>
