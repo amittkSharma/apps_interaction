@@ -99,8 +99,6 @@ namespace app_client
                     SendMessage message = new SendMessage { receivedFrom = ProcessId, message = MessageToSend,sendTo = "dashboard", messageType = "connection" };
                     sendMessage(message);
                     await Receive(socket, CancellationToken.None);
-
-                    NotifyUser("Successfully connected to the server", "Success");
                 }
             }
             catch (Exception ex)

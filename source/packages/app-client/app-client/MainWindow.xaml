@@ -5,9 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:app_client"
         mc:Ignorable="d"
-        Title="Client Applications"
+        Title="Client Application"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Height="450" Width="800">
+        Height="400" Width="600">
+  <Window.Resources>
+    <local:NegationConverter x:Key="NegationConverter" />
+  </Window.Resources>
   <Grid Background="#FFD4E3EA" ShowGridLines="True">
     <Grid.RowDefinitions>
       <RowDefinition Height="50"></RowDefinition>
@@ -22,7 +25,9 @@
 
     <TextBlock Text="Client Application" Grid.Column="1" FontSize="25" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10" />
     <TextBlock Text="{Binding ProcessId}" Grid.Column="1" FontSize="25" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10" />
-    <Button Margin="10" Width="100" Grid.Column="2" HorizontalAlignment="Center" Click="Button_Click">Connect</Button>
+    <Button Margin="10" Width="100" Grid.Column="2" HorizontalAlignment="Center" Click="Button_Click" 
+            IsEnabled="{Binding Path=IsConnectedToServer, Converter={StaticResource NegationConverter}}"
+            >Connect</Button>
 
     <StackPanel Grid.Column="1" Grid.Row="1" Margin="10" IsEnabled="{Binding IsConnectedToServer}">
       <StackPanel Margin="10" Orientation="Horizontal">
@@ -34,11 +39,11 @@
         <TextBox x:Name="outputText" Height="20" TextWrapping="Wrap" MinWidth="200" IsEnabled="False" 
                          IsReadOnly="True"  Text="{Binding Path=MessageReceived, Mode=TwoWay}"/>
       </StackPanel>
-      <Button Margin="20" Width="100" HorizontalAlignment="Right" Click="OnSendMessageClick">Send Message</Button>
+      <Button Margin="20" Width="100" HorizontalAlignment="Left" Click="OnSendMessageClick">Send Message</Button>
     </StackPanel>
 
     <StackPanel Grid.Column="1" Grid.Row="2" Margin="10">
-      <TextBlock Text="For Demo Purposes Onlys" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
+      <TextBlock Text="Demo Application" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
     </StackPanel>
   </Grid>
 </Window>

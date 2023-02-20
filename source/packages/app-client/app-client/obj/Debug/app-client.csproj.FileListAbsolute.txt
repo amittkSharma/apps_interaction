@@ -25,7 +25,6 @@ F:\Personal_Workspace\apps_interaction\source\packages\app-client\app-client\obj
 F:\Personal_Workspace\apps_interaction\source\packages\app-client\app-client\obj\Debug\MainWindow.g.cs
 F:\Personal_Workspace\apps_interaction\source\packages\app-client\app-client\obj\Debug\App.g.cs
 F:\Personal_Workspace\apps_interaction\source\packages\app-client\app-client\obj\Debug\app-client_MarkupCompile.cache
-F:\Personal_Workspace\apps_interaction\source\packages\app-client\app-client\obj\Debug\app-client_MarkupCompile.lref
 F:\Personal_Workspace\apps_interaction\source\packages\app-client\app-client\obj\Debug\MainWindow.baml
 F:\Personal_Workspace\apps_interaction\source\packages\app-client\app-client\obj\Debug\app-client.g.resources
 F:\Personal_Workspace\apps_interaction\source\packages\app-client\app-client\obj\Debug\app_client.Properties.Resources.resources
@@ -34,3 +33,5 @@ F:\Personal_Workspace\apps_interaction\source\packages\app-client\app-client\obj
 F:\Personal_Workspace\apps_interaction\source\packages\app-client\app-client\obj\Debug\app-client.csproj.CopyComplete
 F:\Personal_Workspace\apps_interaction\source\packages\app-client\app-client\obj\Debug\app-client.exe
 F:\Personal_Workspace\apps_interaction\source\packages\app-client\app-client\obj\Debug\app-client.pdb
+F:\Personal_Workspace\apps_interaction\source\packages\app-client\app-client\obj\Debug\GeneratedInternalTypeHelper.g.cs
+F:\Personal_Workspace\apps_interaction\source\packages\app-client\app-client\obj\Debug\app-client_MarkupCompile.lref
