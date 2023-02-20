@@ -11,3 +11,9 @@ export interface MessageReceived {
 export interface NewAppMessageReceived extends MessageReceived {
   connectedAppIds: string[]
 }
+
+export interface RealMessage extends MessageReceived {
+  receivedFrom: string
+  sendTo: string
+  message: string
+}
