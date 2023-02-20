@@ -1,6 +1,6 @@
 import { DashboardOutlined, InteractionOutlined } from '@ant-design/icons'
 import { Button, Layout, Space } from 'antd'
-import React, { useState } from 'react'
+import React from 'react'
 import { notifyUser } from '../components'
 import { Application, MessageReceived, NewAppMessageReceived, RealMessage } from '../models'
 import { ApplicationsViewer } from '../viewers'
@@ -33,23 +33,20 @@ const footerStyle: React.CSSProperties = {
 
 interface Props {
   applications: Application[]
+  ws: WebSocket
   onUpdateApplications: (applications: Application[]) => void
 }
 
-export const DashboardPage: React.FC<Props> = ({ applications, onUpdateApplications }: Props) => {
-  const [socket, setSocket] = useState<WebSocket>()
-  const wsUrl = 'ws://localhost:8081'
+export const DashboardPage: React.FC<Props> = ({
+  ws,
+  applications,
+  onUpdateApplications,
+}: Props) => {
   const applicationId = 'dashboard'
 
   const connect = () => {
-    let ws: WebSocket | undefined = undefined
-    if (ws === undefined) {
-      ws = new WebSocket(wsUrl)
-      setSocket(ws)
-    }
-
     ws.onopen = () => {
-      notifyUser(`Connect to server  on url: ${wsUrl}`, 'Success')
+      notifyUser(`Connect to server  on url: ${ws.url}`, 'Success')
 
       if (ws) {
         const connectionStr = JSON.stringify({
@@ -66,7 +63,7 @@ export const DashboardPage: React.FC<Props> = ({ applications, onUpdateApplicati
 
     ws.onerror = err => {
       notifyUser(
-        `Error encountered on the server ${wsUrl}'. Closing socket due to error: ${err}`,
+        `Error encountered on the server ${ws.url}'. Closing socket due to error: ${err}`,
         'Error',
       )
       if (ws) {
@@ -78,13 +75,13 @@ export const DashboardPage: React.FC<Props> = ({ applications, onUpdateApplicati
       if (ws && ws.readyState === WebSocket.OPEN) {
         transformMessage(messageReceived.data)
       } else {
-        notifyUser(`Unable to receive the data on server: ${wsUrl}`, 'Error')
+        notifyUser(`Unable to receive the data on server: ${ws.url}`, 'Error')
       }
     }
   }
 
   const onHandleSendData = (data: Application) => {
-    if (socket && socket.readyState !== WebSocket.CLOSED) {
+    if (ws && ws.readyState !== WebSocket.CLOSED) {
       const sendMsg: RealMessage = {
         messageType: 'message',
         receivedFrom: applicationId,
@@ -92,7 +89,7 @@ export const DashboardPage: React.FC<Props> = ({ applications, onUpdateApplicati
         message: data.input,
       }
 
-      socket.send(JSON.stringify(sendMsg))
+      ws.send(JSON.stringify(sendMsg))
     } else {
       notifyUser(`Not able to send the message to the server`, 'Error')
     }
