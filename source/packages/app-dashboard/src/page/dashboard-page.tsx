@@ -1,7 +1,7 @@
 import { AlertOutlined } from '@ant-design/icons'
 import { Alert, Tooltip } from 'antd'
 import React, { useState } from 'react'
-import { DashboardAppLayout } from '../components'
+import { DashboardAppLayout, notifyUser } from '../components'
 import { Application, MessageReceived, NewAppMessageReceived, RealMessage } from '../models'
 import { WsConnectionProvider } from '../providers'
 import { ApplicationsViewer } from '../viewers'
@@ -24,6 +24,7 @@ export const DashboardPage: React.FC = () => {
     }
 
     sendRequest(JSON.stringify(sendMsg))
+    notifyUser(`Message is successfully transmitted to ${data.appId}`, 'Success')
   }
 
   const transformMessage = (msg: string) => {
