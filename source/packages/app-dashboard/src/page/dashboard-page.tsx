@@ -1,31 +1,10 @@
-import { AlertOutlined, DashboardOutlined } from '@ant-design/icons'
-import { Alert, Layout, Space, Tooltip } from 'antd'
+import { AlertOutlined } from '@ant-design/icons'
+import { Alert, Tooltip } from 'antd'
 import React, { useState } from 'react'
+import { DashboardAppLayout } from '../components'
 import { Application, MessageReceived, NewAppMessageReceived, RealMessage } from '../models'
 import { WsConnectionProvider } from '../providers'
 import { ApplicationsViewer } from '../viewers'
-
-const { Header, Footer, Content } = Layout
-
-const headerStyle: React.CSSProperties = {
-  backgroundColor: '#7dbcea',
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-}
-
-const contentStyle: React.CSSProperties = {
-  textAlign: 'left',
-  minHeight: '87vh',
-  lineHeight: '120px',
-  backgroundColor: '#108ee9',
-}
-
-const footerStyle: React.CSSProperties = {
-  textAlign: 'center',
-  backgroundColor: '#7dbcea',
-}
 
 export const DashboardPage: React.FC = () => {
   const applicationId = 'dashboard'
@@ -89,41 +68,29 @@ export const DashboardPage: React.FC = () => {
         } else {
           transformMessage(response)
           return (
-            <Space direction="vertical" style={{ width: '100%' }} size={[0, 48]}>
-              <Layout>
-                <Header style={headerStyle}>
-                  <DashboardOutlined
+            <DashboardAppLayout
+              content={
+                <ApplicationsViewer
+                  key={JSON.stringify(applications)}
+                  applications={applications}
+                  onSendData={data => onHandleSendData(data, sendRequest)}
+                />
+              }
+              action={
+                <Tooltip
+                  title={readyState === 1 ? 'Connected' : 'Not Connected'}
+                  placement="leftBottom"
+                >
+                  <AlertOutlined
                     style={{
                       fontSize: 40,
                       marginRight: 20,
+                      color: readyState === 1 ? 'green' : 'red',
                     }}
                   />
-                  <p style={{ fontSize: 32 }}>Application Communication Dashboard</p>
-                  <Tooltip
-                    title={readyState === 1 ? 'Connected' : 'Not Connected'}
-                    placement="leftBottom"
-                  >
-                    <AlertOutlined
-                      style={{
-                        fontSize: 40,
-                        marginRight: 20,
-                        color: readyState === 1 ? 'green' : 'red',
-                      }}
-                    />
-                  </Tooltip>
-                </Header>
-                <Content style={contentStyle}>
-                  <div style={{ margin: 8 }}>
-                    <ApplicationsViewer
-                      key={JSON.stringify(applications)}
-                      applications={applications}
-                      onSendData={data => onHandleSendData(data, sendRequest)}
-                    />
-                  </div>
-                </Content>
-                <Footer style={footerStyle}>Demo Application</Footer>
-              </Layout>
-            </Space>
+                </Tooltip>
+              }
+            />
           )
         }
       }}
