@@ -67,12 +67,12 @@ export const DashboardPage: React.FC = () => {
       setApplications(existingApps)
     } else if (msgReceived.messageType === 'message') {
       const realReceivedMsg: RealMessage = parsedMsg
-      const { receivedFrom, sendTo, message } = realReceivedMsg
+      const { receivedFrom, message } = realReceivedMsg
       const existingApps = applications.map(x => x)
       if (receivedFrom.toLowerCase() === 'dashboard') {
         console.log(`Do not update me I am in the sender ${applications.length}`)
       } else {
-        const app = existingApps.find(x => x.appId.toLowerCase() === sendTo.toLowerCase())
+        const app = existingApps.find(x => x.appId.toLowerCase() === receivedFrom.toLowerCase())
         if (app) {
           app.output = message
         }
@@ -130,6 +130,7 @@ export const DashboardPage: React.FC = () => {
                 <Content style={contentStyle}>
                   <div style={{ margin: 8 }}>
                     <ApplicationsViewer
+                      key={JSON.stringify(applications)}
                       applications={applications}
                       onSendData={data => onHandleSendData(data, sendRequest)}
                     />

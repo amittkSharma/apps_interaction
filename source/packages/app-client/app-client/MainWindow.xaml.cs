@@ -53,6 +53,17 @@ namespace app_client
         }
         private string _messageToSend = "";
 
+        public string MessageReceived
+        {
+            get { return _messageReceived; }
+            set
+            {
+                _messageReceived = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _messageReceived = "";
+
         public string ProcessId
         {
             get { return _processId; }
@@ -117,7 +128,7 @@ namespace app_client
         {
             SendMessage message = new SendMessage { receivedFrom = ProcessId, message = MessageToSend, sendTo = "dashboard", messageType = "message" };
             sendMessage(message);
-           
+
         }
 
         private async Task Receive(ClientWebSocket socket, CancellationToken stoppingToken)
@@ -138,8 +149,18 @@ namespace app_client
                         break;
 
                     ms.Seek(0, SeekOrigin.Begin);
+                    string streamResult;
                     using (var reader = new StreamReader(ms, Encoding.UTF8))
-                        Console.WriteLine(await reader.ReadToEndAsync());
+                    {
+                        streamResult = await reader.ReadToEndAsync();
+                    }
+
+                    SendMessage msg = JsonConvert.DeserializeObject<SendMessage>(streamResult);
+                    if (msg.receivedFrom == "dashboard" && ProcessId == msg.sendTo)
+                    {
+                        MessageReceived = msg.message;
+                    }
+
                 }
             };
         }

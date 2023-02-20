@@ -32,7 +32,7 @@
       <StackPanel Margin="10" Orientation="Horizontal">
         <TextBlock Text="Output:" Margin="10"/>
         <TextBox x:Name="outputText" Height="20" TextWrapping="Wrap" MinWidth="200" IsEnabled="False" 
-                         IsReadOnly="True"/>
+                         IsReadOnly="True"  Text="{Binding Path=MessageReceived, Mode=TwoWay}"/>
       </StackPanel>
       <Button Margin="20" Width="100" HorizontalAlignment="Right" Click="OnSendMessageClick">Send Message</Button>
     </StackPanel>

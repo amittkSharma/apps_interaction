@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-F:\Personal_Workspace\app-client\app-client\obj\Debug\
+F:\Personal_Workspace\apps_interaction\source\packages\app-client\app-client\obj\Debug\
 app_client
 none
 false
 DEBUG;TRACE
-F:\Personal_Workspace\app-client\app-client\App.xaml
+F:\Personal_Workspace\apps_interaction\source\packages\app-client\app-client\App.xaml
 11151548125
 
 6-837831035
-15-2099212109
+15-1259461496
 MainWindow.xaml;
 
 False
