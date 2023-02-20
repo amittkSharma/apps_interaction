@@ -2,33 +2,8 @@ import * as http from 'http'
 import { WebSocket } from 'ws'
 import { app } from './app'
 import { config } from './config'
+import { ApplicationType, IncomingMessage, MessageType, NewConnectionMessage } from './models'
 import { log } from './utils'
-
-enum MessageType {
-  CONNECTION = 'connection',
-  NEW_APPLICATIONS = 'newApps',
-  MESSAGE = 'message',
-  DISCONNECTED = 'disconnected',
-}
-
-enum ApplicationType {
-  CLIENT = 'client',
-  DASHBOARD = 'dashboard',
-}
-
-interface BaseMessage {
-  messageType: MessageType
-}
-
-interface IncomingMessage extends BaseMessage {
-  receivedFrom: string
-  sendTo?: string
-  message?: string
-}
-
-interface NewConnectionMessage extends BaseMessage {
-  connectedAppIds: string[]
-}
 
 const server = http.createServer(app)
 const wsServer = new WebSocket.Server({ server })
@@ -52,8 +27,8 @@ wsServer.on('connection', function (ws) {
 
     if (messageType === MessageType.CONNECTION) {
       if (connectedApps.indexOf(receivedFrom) === -1) {
-        log.info(`Adding new client to sever: ${receivedFrom}`)
         connectedApps.push(receivedFrom)
+        log.info(`New app is connected to the server: ${receivedFrom}`)
         let newConnectionMsg: NewConnectionMessage = {
           messageType: MessageType.NEW_APPLICATIONS,
           connectedAppIds: [],
@@ -72,10 +47,7 @@ wsServer.on('connection', function (ws) {
           }
         }
         log.info(`sending apps on the socket ${JSON.stringify(newConnectionMsg, null, 2)}`)
-
-        // ws.send(JSON.stringify(newConnectionMsg))
         wsServer.clients.forEach(client => {
-          log.info(client.readyState)
           if (client.readyState === WebSocket.OPEN) {
             client.send(JSON.stringify(newConnectionMsg))
           }
@@ -84,10 +56,8 @@ wsServer.on('connection', function (ws) {
         log.warn(`${receivedFrom} is already connected to the server`)
       }
     } else {
-      log.info(`in else part ${JSON.stringify(incomingMsg, null, 2)}`)
-      // ws.send(JSON.stringify(incomingMsg))
+      log.info(`Message received ${JSON.stringify(incomingMsg, null, 2)}`)
       wsServer.clients.forEach(client => {
-        log.info(client.readyState)
         if (client.readyState === WebSocket.OPEN) {
           client.send(JSON.stringify(incomingMsg))
         }
