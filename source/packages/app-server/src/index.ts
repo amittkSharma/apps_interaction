@@ -40,6 +40,12 @@ server.listen(config.server.port, () => {
 })
 
 wsServer.on('connection', function (ws) {
+  const serverReached: NewConnectionMessage = {
+    messageType: MessageType.CONNECTION,
+    connectedAppIds: [],
+  }
+  ws.send(JSON.stringify(serverReached))
+
   ws.on('message', msg => {
     const incomingMsg: IncomingMessage = JSON.parse(msg.toString())
     const { messageType, receivedFrom } = incomingMsg
@@ -57,13 +63,12 @@ wsServer.on('connection', function (ws) {
             ...newConnectionMsg,
             connectedAppIds: connectedApps.filter(
               x => x.toLowerCase() !== ApplicationType.DASHBOARD.toLowerCase(),
-            )
+            ),
           }
-
         } else {
           newConnectionMsg = {
             ...newConnectionMsg,
-            connectedAppIds: [receivedFrom]
+            connectedAppIds: [receivedFrom],
           }
         }
         log.info(`sending apps on the socket ${JSON.stringify(newConnectionMsg, null, 2)}`)
