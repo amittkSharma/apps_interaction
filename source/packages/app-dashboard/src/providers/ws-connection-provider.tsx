@@ -23,14 +23,12 @@ export const WsConnectionProvider: FaCC<any, any> = props => {
   const connect = () => {
     if (ws.current) {
       let connectInterval: any
-      // websocket onopen event listener
       ws.current.onopen = () => {
         notifyUser(`Connect to server on url: ${wsUrl}`, 'Success')
-        timeout = 250 // reset timer to 250 on open of websocket connection
-        clearTimeout(connectInterval) // clear Interval on on open of websocket connection
+        timeout = 250
+        clearTimeout(connectInterval)
       }
 
-      // websocket onclose event listener
       ws.current.onclose = e => {
         notifyUser(
           `Socket is closed. Reconnect will be attempted in ${Math.min(
@@ -40,11 +38,10 @@ export const WsConnectionProvider: FaCC<any, any> = props => {
           'Info',
         )
 
-        timeout = timeout + timeout // increment retry interval
-        connectInterval = setTimeout(check, Math.min(10000, timeout)) // call check function after timeout
+        timeout = timeout + timeout
+        connectInterval = setTimeout(check, Math.min(10000, timeout))
       }
 
-      // websocket onerror event listener
       ws.current.onerror = err => {
         notifyUser(
           `Error encountered on the server ${wsUrl}'. Closing socket due to error: ${err}`,
@@ -65,9 +62,6 @@ export const WsConnectionProvider: FaCC<any, any> = props => {
     }
   }
 
-  // /**
-  //  * utilized by the @function connect to check if the connection is close, if so attempts to reconnect
-  //  */
   const check = () => {
     if (ws.current) {
       if (!ws || ws.current.readyState === WebSocket.CLOSED) {
@@ -81,7 +75,6 @@ export const WsConnectionProvider: FaCC<any, any> = props => {
     data: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView | undefined,
   ) => {
     if (ws.current) {
-      console.log('Sending data to the websocket...')
       if (data !== undefined) {
         ws.current.send(data)
       }

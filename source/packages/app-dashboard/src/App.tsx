@@ -1,12 +1,12 @@
 import React from 'react'
 import './App.css'
-import { HomePage } from './page/home-page'
+import { DashboardPage } from './page'
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <HomePage />
+        <DashboardPage />
       </header>
     </div>
   )

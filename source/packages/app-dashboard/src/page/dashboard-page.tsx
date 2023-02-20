@@ -1,17 +1,13 @@
-import { DashboardOutlined, InteractionOutlined } from '@ant-design/icons'
-import { Alert, Button, Layout, Space } from 'antd'
+import { AlertOutlined, DashboardOutlined } from '@ant-design/icons'
+import { Alert, Layout, Space, Tooltip } from 'antd'
 import React, { useState } from 'react'
 import { Application, MessageReceived, NewAppMessageReceived, RealMessage } from '../models'
+import { WsConnectionProvider } from '../providers'
 import { ApplicationsViewer } from '../viewers'
-import { WsConnectionProvider } from './ws-connection-provider'
 
 const { Header, Footer, Content } = Layout
 
 const headerStyle: React.CSSProperties = {
-  textAlign: 'center',
-  height: 64,
-  paddingInline: 50,
-  lineHeight: '64px',
   backgroundColor: '#7dbcea',
   display: 'flex',
   flexDirection: 'row',
@@ -54,44 +50,29 @@ export const DashboardPage: React.FC = () => {
   const transformMessage = (msg: string) => {
     const parsedMsg = JSON.parse(JSON.stringify(msg))
     const msgReceived: MessageReceived = parsedMsg
+    const existingApps = applications.map(x => x)
 
     if (msgReceived.messageType === 'newApps') {
       const newAppsReceivedMsg: NewAppMessageReceived = parsedMsg
-      const existingApps = applications.map(x => x)
       newAppsReceivedMsg.connectedAppIds.forEach(appId => {
         const index = existingApps.findIndex(app => app.appId === appId)
         if (index === -1) {
           existingApps.push({ appId, input: '', output: '' })
         }
       })
-      setApplications(existingApps)
     } else if (msgReceived.messageType === 'message') {
       const realReceivedMsg: RealMessage = parsedMsg
       const { receivedFrom, message } = realReceivedMsg
-      const existingApps = applications.map(x => x)
-      if (receivedFrom.toLowerCase() === 'dashboard') {
+      if (receivedFrom.toLowerCase() === applicationId) {
         console.log(`Do not update me I am in the sender ${applications.length}`)
       } else {
         const app = existingApps.find(x => x.appId.toLowerCase() === receivedFrom.toLowerCase())
         if (app) {
           app.output = message
         }
-
-        setApplications(existingApps)
       }
     }
-  }
-
-  const onHandleMakeConnection = (
-    sendRequest: (
-      data: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView | undefined,
-    ) => void,
-  ) => {
-    const connectionStr = JSON.stringify({
-      receivedFrom: applicationId,
-      messageType: 'connection',
-    })
-    sendRequest(connectionStr)
+    setApplications(existingApps)
   }
 
   return (
@@ -103,13 +84,10 @@ export const DashboardPage: React.FC = () => {
         ) => void,
         readyState: number,
       ) => {
-        console.log(response, readyState)
         if (response === undefined) {
           return <Alert message="Messages are not received from server" type="error" />
         } else {
-          console.log(JSON.stringify(response, null, 2))
           transformMessage(response)
-
           return (
             <Space direction="vertical" style={{ width: '100%' }} size={[0, 48]}>
               <Layout>
@@ -117,15 +95,22 @@ export const DashboardPage: React.FC = () => {
                   <DashboardOutlined
                     style={{
                       fontSize: 40,
+                      marginRight: 20,
                     }}
                   />
-                  Application Communication Dashboard
-                  <Button
-                    type="primary"
-                    shape="circle"
-                    icon={<InteractionOutlined />}
-                    onClick={() => onHandleMakeConnection(sendRequest)}
-                  />
+                  <p style={{ fontSize: 32 }}>Application Communication Dashboard</p>
+                  <Tooltip
+                    title={readyState === 1 ? 'Connected' : 'Not Connected'}
+                    placement="leftBottom"
+                  >
+                    <AlertOutlined
+                      style={{
+                        fontSize: 40,
+                        marginRight: 20,
+                        color: readyState === 1 ? 'green' : 'red',
+                      }}
+                    />
+                  </Tooltip>
                 </Header>
                 <Content style={contentStyle}>
                   <div style={{ margin: 8 }}>
